@@ -13,10 +13,10 @@ export default function Bootstrap(){
             <div className="bodycard">
         <CardGroup>
         <Card className="card" border="secondary" style={{ width: '18rem' }}>
-          <Card.Img variant="top" src={imgregist} />
+        <Link className="nav-link" to='/registraractivo'><Card.Img variant="top" src={imgregist} /></Link>
           <Card.Body>
             <Card.Title>Registrar Activo</Card.Title>
-            <Card.Link href="#">IR</Card.Link>
+            <Link className="nav-link" to='/registraractivo'>IR</Link>
           </Card.Body>
         </Card>
         <Card className="card" border="secondary" style={{ width: '18rem' }}>
@@ -27,10 +27,10 @@ export default function Bootstrap(){
           </Card.Body>
         </Card>
         <Card border="secondary" style={{ width: '18rem' }}> 
-          <Card.Img variant="top" src={imgtipoact} />
+        <Link className="nav-link" to='/registrartipodeactivo'> <Card.Img variant="top" src={imgtipoact} /></Link>
           <Card.Body>
             <Card.Title>Registras tipo de activo fijo</Card.Title>
-            <Card.Link href="#">IR</Card.Link>
+            <Link className="nav-link" to='/registrartipodeactivo'>IR</Link>
           </Card.Body>
         </Card>
       </CardGroup>

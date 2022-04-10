@@ -2,6 +2,7 @@ import React from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Table, Button, Container, Modal, ModalBody, ModalHeader, FormGroup, ModalFooter } from "reactstrap";
 import { Link } from 'react-router-dom';
+import {Form,FormControl} from "react-bootstrap";
 import '../estilos/Crud.css';
 
 const data = [
@@ -20,7 +21,7 @@ class REmpleado extends React.Component {
            calular:''
         },
         modalInsertar: false,
-        
+        modalEditar: false,
     };
 
     handleChange=e=>{
@@ -39,14 +40,62 @@ class REmpleado extends React.Component {
     ocultarModalInsertar=()=>{ //Creando una funcion para cerrar el modal
         this.setState({modalInsertar:false});
     }
+    inertarEmpleado=()=>{ //Creando funcion para insertar un nuevo empelado
+        let valorNuevo = {...this.state.form};
+        valorNuevo.id = this.state.data.length+1;
+        var lista=this.state.data;
+        lista.push(valorNuevo);
+        this.setState({data: lista, modalInsertar:false});
+    }
 
+    mostrarModalEditar=(registro)=>{ //Creando una funcio para cambiar el estado a true del modal editar 
+        this.setState({modalEditar:true, form:registro}); //Le pasamos el registro para que la ventana modal de editar venga con los valores actueles del campo 
+    }
+
+    ocultarModaEditar=()=>{ //Creando una funcion para cerrar el modal editar
+        this.setState({modalEditar:false});
+    }
+
+    editarEmpleado=(dato)=>{
+        let contador = 0;
+        let lista = this.state.data;
+        lista.map((registro)=>{
+            if(dato.id == registro.id){
+                lista[contador].nombre=dato.nombre;
+                lista[contador].apellido=dato.apellido;
+                lista[contador].cedula=dato.cedula;
+                lista[contador].celular=dato.celular;
+            }
+            contador++;
+        });
+        this.setState({data: lista, modalEditar: false}); //Actuelizando nuestra lista 
+    }
+
+    eliminarEmpleado = (dato)=>{
+        let opcion =window.confirm("Realmente desea eliminar el registro"+dato.id)
+        if(opcion){
+            let contador = 0; 
+            let lista = this.state.data;
+            lista.map((registro)=>{
+                if(registro.id==dato.id){
+                    lista.splice(contador,1)
+                }
+                contador++;
+            })
+            this.setState({data:lista});
+        }
+    }
     render() {
         return (
             <>
                 <div className="registrarempl">
                     <Container>
                         <br />
-                        <Button color="primary" onClick={()=>this.mostrarModalInsertar()}>Insertar Nuevo Empleado</Button>
+                        <Button color="success" onClick={()=>this.mostrarModalInsertar()}>Insertar Nuevo Empleado</Button>
+                        <Form className="d-flex">
+                            <FormControl type="search" placeholder="Search" className="me-2" aria-label="Search"/>
+                            <Button variant="outline-success">Search</Button>
+                        </Form>
                         <br /><br />
 
                         <Table>
@@ -65,9 +114,10 @@ class REmpleado extends React.Component {
                                         <td>{elemento.nombre}</td>
                                         <td>{elemento.apellido}</td>
                                         <td>{elemento.cedula}</td>
-                                        <td>{elemento.celular}</td>
-                                        <td><Button color="primary">Editar</Button>{"  "}<Button color="danger">Eliminar</Button></td>
-                                    </tr>
+                                        <td>{elemento.celular}</td>          {/*Llamando la funcion para mostrar el modal editar*/}
+                                        <td><Button color="primary" onClick={()=>this.mostrarModalEditar(elemento)}>Editar</Button>
+                                        {"  "}<Button color="danger" onClick={()=>this.eliminarEmpleado(elemento)}>Eliminar</Button></td>
+                                    </tr>                                   
                                 ))}
                             </tbody>
                         </Table>
@@ -83,7 +133,7 @@ class REmpleado extends React.Component {
                     <ModalBody>
                         <FormGroup>
                             <label>Id:</label>
-                            <input className="form-control" readOnly type="text" value={this.state.data.length+1}/>
+                            <input className="form-control" readOnly type="number" value={this.state.data.length+1}/>
                         </FormGroup>
 
                         <FormGroup>
@@ -93,24 +143,64 @@ class REmpleado extends React.Component {
 
                         <FormGroup>
                             <label> Apellido: </label>
-                            <input className="form-control" name="apellido" type="text"/>
+                            <input className="form-control" name="apellido" type="text" onChange={this.handleChange}/>
                         </FormGroup>
 
                         <FormGroup>
                             <label> Cedula:</label>
-                            <input className="form-control" name="cedula" type="number"/>
+                            <input className="form-control" name="cedula" type="number" onChange={this.handleChange}/>
                         </FormGroup>
 
                         <FormGroup>
                             <label> Celular:</label>
-                            <input className="form-control" name="celular" type="number"/>
+                            <input className="form-control" name="celular" type="number" onChange={this.handleChange}/>
                         </FormGroup>
                     </ModalBody>
 
                     <ModalFooter>
-                        <Button color="primary"> Insertar</Button>
+                        <Button color="primary" onClick={()=>this.inertarEmpleado()}> Insertar</Button>
                         <Button color="danger" onClick={()=>this.ocultarModalInsertar()}>Cancelar</Button>  
                     </ModalFooter>
+                </Modal>
+
+                 {/*CREANDO LA VENTANA MODAL PARA EDITAR EMPLEADOS*/}
+
+                 <Modal isOpen={this.state.modalEditar}>
+                    <ModalHeader>
+                        <div><h3>Editar Empleado</h3></div>
+                    </ModalHeader>
+
+                    <ModalBody>
+                        <FormGroup>
+                            <label>Id:</label>
+                            <input className="form-control" readOnly type="number" value={this.state.form.id}/>
+                        </FormGroup>
+
+                        <FormGroup>
+                            <label> Nombre:</label>
+                            <input className="form-control" name="nombre" type="text" onChange={this.handleChange} value={this.state.form.nombre}/>
+                        </FormGroup>
+
+                        <FormGroup>
+                            <label> Apellido: </label>
+                            <input className="form-control" name="apellido" type="text" onChange={this.handleChange} value={this.state.form.apellido}/>
+                        </FormGroup>
+
+                        <FormGroup>
+                            <label> Cedula:</label>
+                            <input className="form-control" name="cedula" type="number" onChange={this.handleChange} value={this.state.form.cedula}/>
+                        </FormGroup>
+
+                        <FormGroup>
+                            <label> Celular:</label>
+                            <input className="form-control" name="celular" type="number" onChange={this.handleChange} value={this.state.form.celular}/>
+                        </FormGroup>
+                    </ModalBody>
+
+                    <ModalFooter>
+                        <Button color="primary" onClick={()=>this.editarEmpleado(this.state.form)}>Editar</Button>
+                        <Button color="danger" onClick={()=>this.ocultarModaEditar()}>Cancelar</Button>  
+                    </ModalFooter>              {/*Llamando el metodo para cerrar el modal editar */}
                 </Modal>
             </>
         )

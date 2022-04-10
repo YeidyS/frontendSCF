@@ -7,6 +7,8 @@ import REmpleado from './Crud/REmpleado';
 import ReactBootstrap from "./componeteshome/Header";
 import BodyCard from "./componeteshome/BodyCard";
 import {Routes, Route} from "react-router-dom"; 
+import RActivo from './Crud/RActivo';
+import RTActivo from './Crud/RTActivo'
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
         <Routes>
          <Route path='/inicio' exact element={<BodyCard/>}/>
          <Route path='/registrarempleado' element={<REmpleado/>}/>
+         <Route path='/registraractivo' element={<RActivo/>}/>
+         <Route path='/registrartipodeactivo' element={<RTActivo/>}/>
         </Routes>
         
         </header>

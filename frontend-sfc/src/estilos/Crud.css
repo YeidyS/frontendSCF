@@ -1,3 +1,7 @@
-.registrarempl{
+.registrarempl,.registraractivo{
     margin-bottom: 250px;
+}
+
+.d-flex{
+    margin-top: 20px;
 }

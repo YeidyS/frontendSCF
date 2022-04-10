@@ -9,12 +9,19 @@
     margin-bottom: 50px;
 }
 
+.cerrar{
+    margin-left: 210px;
+}
+
 .bodycard{
     width: 80%;
     margin-left: auto;
     margin-right: auto;
+    text-align: center;
 }
-
+.text-white{
+    text-align: center;
+}
 .card{
     margin-right: 0px;
 }
