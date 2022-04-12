@@ -8,7 +8,9 @@ import ReactBootstrap from "./componeteshome/Header";
 import BodyCard from "./componeteshome/BodyCard";
 import {Routes, Route} from "react-router-dom"; 
 import RActivo from './Crud/RActivo';
-import RTActivo from './Crud/RTActivo'
+import RTActivo from './Crud/RTActivo';
+import ILogin from './login/ILogin';
+import RLogin from './login/RLogin';
 
 function App() {
   return (
@@ -26,8 +28,9 @@ function App() {
         </Routes>
         
         </header>
-       
-        
+
+        <ILogin/>
+        <RLogin/>
         <footer>
          <Footer></Footer>
         </footer>

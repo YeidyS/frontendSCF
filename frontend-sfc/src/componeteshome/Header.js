@@ -2,13 +2,13 @@ import React, { Component } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Navbar,Nav,NavDropdown,Button,Form,FormControl,Container} from "react-bootstrap";
 import {Link} from 'react-router-dom';
+import '../estilos/home.css'
 
 
 export default function Bootstrap(){
     return (
     <Navbar bg="black" expand="lg" variant="dark">
     <Container>
-      <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="me-auto">
