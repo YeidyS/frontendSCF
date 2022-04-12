@@ -29,8 +29,8 @@ function App() {
         
         </header>
 
-        <ILogin/>
-        <RLogin/>
+        {/* <ILogin/>
+        <RLogin/> */}
         <footer>
          <Footer></Footer>
         </footer>

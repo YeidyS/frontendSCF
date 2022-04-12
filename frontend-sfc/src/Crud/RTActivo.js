@@ -1,131 +1,217 @@
 import React from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from "axios";
+import Swal from "sweetalert2";
 import { Table, Button, Container, Modal, ModalBody, ModalHeader, FormGroup, ModalFooter } from "reactstrap";
 import { Link } from 'react-router-dom';
-import {Form,FormControl} from "react-bootstrap";
+import { Form, FormControl } from "react-bootstrap";
 import '../estilos/Crud.css';
 
 const data = [
-    { id: 1, codigo: "Jose", NTAFijo: "Castillo"},
-    
-];
+    { id: 1, codigo: "Jose", NTAFijo: "Castillo" },
 
+];
 
 class RTActivo extends React.Component {
     state = {
-        data: data,
-        form:{ //Creadndo el estado del formulario 
-           id:'',
-           codigo:'',
-           NTAFijo:''
+        data: [],
+        form: { //Creadndo el estado del formulario 
+            id: 0,
+            codigo: '',
+            numeroActivofijo: ''
         },
         modalInsertar: false,
         modalEditar: false,
     };
 
-    mostrarModalInsertar=()=>{ //Creando una funcio para cambiar el estado a true
-        this.setState({modalInsertar:true});
+    URL = "https://web-api-project-activos-fijos.herokuapp.com/api/TipoActivo"
+
+    peticionGet = () => {
+        axios.get(this.URL).then(response => {
+            this.setState({ data: response.data });
+        }).catch(error => {
+            console.log(error.message);
+        })
     }
 
-    ocultarModalInsertar=()=>{ //Creando una funcion para cerrar el modal
-        this.setState({modalInsertar:false});
+    peticionPost = async () => {
+        delete this.state.form.id;
+        await axios.post(this.URL, this.state.form).then(response => {
+            this.modalInsertar();
+            this.peticionGet();
+            if (response.status === 201) {
+                Swal.fire(
+                    'Guardado!',
+                    ` El registro ${response.data.codigo} ha sido guardado exitosamente!`,
+                    'success'
+                )
+            } else {
+                Swal.fire(
+                    'Error!',
+                    'Hubo un problema al crear el registro!',
+                    'error'
+                )
+            }
+        }).catch(error => {
+            console.log(error.message);
+        })
     }
 
-    mostrarModalEditar=(registro)=>{ //Creando una funcio para cambiar el estado a true del modal editar 
-        this.setState({modalEditar:true, form:registro}); //Le pasamos el registro para que la ventana modal de editar venga con los valores actueles del campo 
+    peticionPut = () => {
+        axios.put(`${this.URL}/${this.state.form.id}`, this.state.form).then(response => {
+            this.modalInsertar();
+            this.peticionGet();
+            if (response.status === 204) {
+                Swal.fire(
+                    'Actualizado!',
+                    `El tipo de activo ha sido actualizado  exitosamente!`,
+                    'success'
+                )
+            } else {    
+                Swal.fire(
+                    'Error!',
+                    'Hubo un problema al crear el registro!',
+                    'error'
+                )
+            }
+        }).catch(error => {
+            console.log(error.message);
+        })
     }
 
-    ocultarModaEditar=()=>{ //Creando una funcion para cerrar el modal editar
-        this.setState({modalEditar:false});
+    modalInsertar = () => {
+        this.setState({ modalInsertar: !this.state.modalInsertar });
     }
+
+
+    peticionDelete = () => {
+        axios.delete(`${this.URL}/${this.state.form.id}`).then(response => {
+            this.setState({ modalEliminar: false });
+            this.peticionGet();
+            if (response.status === 204) {
+                Swal.fire(
+                    'Borrado!',
+                    `El tipo de activo ha sido borrado  exitosamente!`,
+                    'success'
+                )
+            } else {    
+                Swal.fire(
+                    'Error!',
+                    'Hubo un problema al crear el registro!',
+                    'error'
+                )
+            }
+        }).catch(error => {
+            console.log(error.message);
+        })
+    }
+
+    seleccionarEmpresa = (tipoActivo) => {
+        this.setState({
+            tipoModal: 'actualizar',
+            form: {
+                id: tipoActivo.id,
+                codigo: tipoActivo.codigo,
+                numeroActivofijo: tipoActivo.numeroActivofijo
+            }
+        })
+    }
+
+
+    handleChange = async e => {
+        e.persist();
+        await this.setState({
+            form: {
+                ...this.state.form,
+                [e.target.name]: e.target.value
+            }
+        });
+        console.log(this.state.form);
+    }
+
+    componentDidMount() {
+        this.peticionGet();
+    }
+
     render() {
+        const { form } = this.state;
         return (
             <>
+
                 <div className="registraractivo">
-                    <Container>
-                        <br />
-                        <Button color="success" onClick={()=>this.mostrarModalInsertar()}>Insertar Tipo de Activo</Button>
-                        <br /><br />
 
-                        <Table>
-                            <thead> 
-                                <tr><th>Id</th>
-                                    <th>Código</th>
-                                    <th>Nombre del Tipo de Activo Fijo</th>
-                                    <th>Acciones</th>
-                                    </tr>
-                            </thead>
-                            <tbody>
-                                {this.state.data.map((elemento) => (
+                    <br /><br /><br />
+                    <button className="btn btn-success registrartipoactivo" onClick={() => { this.setState({ form: null, tipoModal: 'insertar' }); this.modalInsertar() }}>Agregar Tipo de Activo</button>
+                    <br /><br />
+
+                    <table className="table ">
+                        <thead>
+                            <tr>
+                                <th>id</th>
+                                <th>Codigo</th>
+                                <th>Tipo de Activo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {this.state.data.map(tipoActivo => {
+                                return (
                                     <tr>
-                                        <td>{elemento.id}</td>
-                                        <td>{elemento.codigo}</td>
-                                        <td>{elemento.NTAFijo}</td>                   
-                                        <td><Button color="primary" onClick={()=>this.mostrarModalEditar(elemento)}>Editar</Button>
-                                        {"  "}<Button color="danger">Eliminar</Button></td>
-                                    </tr>                                   
-                                ))}
-                            </tbody>
-                        </Table>
-                    </Container>
+                                        <td>{tipoActivo.id}</td>
+                                        <td>{tipoActivo.codigo}</td>
+                                        <td>{tipoActivo.numeroActivofijo}</td>
+                                        <td>
+                                            <i className="bi bi-pencil-square acciones editar" onClick={() => { this.seleccionarEmpresa(tipoActivo); this.modalInsertar() }}></i>
+                                            {"   "}
+                                            <i className="bi bi-trash-fill acciones borrar" onClick={() => { this.seleccionarEmpresa(tipoActivo); this.setState({ modalEliminar: true }) }}></i>
+                                        </td>
+                                    </tr>
+                                )
+                            })}
+                        </tbody>
+                    </table>
+
+                    <Modal isOpen={this.state.modalInsertar}>
+                        <ModalHeader style={{ display: 'block' }}>
+                            <span style={{ float: 'right' }} onClick={() => this.modalInsertar()}>x</span>
+                        </ModalHeader>
+                        <ModalBody>
+                            <div className="form-group">
+                                <label htmlFor="id">ID</label>
+                                <input className="form-control" type="number" name="id" id="id" readOnly onChange={this.handleChange} value={form ? form.id : this.state.data.length + 1} />
+                                <br />
+                                <label htmlFor="nombre">Codigo</label>
+                                <input className="form-control" type="text" name="codigo" id="codigo" onChange={this.handleChange} value={form ? form.codigo : ''} />
+                                <br />
+                                <label htmlFor="nombre">Tipo de Activo</label>
+                                <input className="form-control" type="text" name="numeroActivofijo" id="numeroActivofijo" onChange={this.handleChange} value={form ? form.numeroActivofijo : ''} />
+                                <br />
+                            </div>
+                        </ModalBody>
+
+                        <ModalFooter>
+                            {this.state.tipoModal == 'insertar' ?
+                                <button className="btn btn-success" onClick={() => this.peticionPost()}>
+                                    Insertar
+                                </button> : <button className="btn btn-primary" onClick={() => this.peticionPut()}>
+                                    Actualizar
+                                </button>
+                            }
+                            <button className="btn btn-danger" onClick={() => this.modalInsertar()}>Cancelar</button>
+                        </ModalFooter>
+                    </Modal>
+
+
+                    <Modal isOpen={this.state.modalEliminar}>
+                        <ModalBody>
+                            Estás seguro que deseas eliminar el tipo de activo {form && form.nombre}
+                        </ModalBody>
+                        <ModalFooter>
+                            <button className="btn btn-danger" onClick={() => this.peticionDelete()}>Sí</button>
+                            <button className="btn btn-secundary" onClick={() => this.setState({ modalEliminar: false })}>No</button>
+                        </ModalFooter>
+                    </Modal>
+
                 </div>
-                {/*CREANDO LA VENTANA MODAL PARA INSERTAR TIPO DE ACTIVOS*/}
-                <Modal isOpen={this.state.modalInsertar}>
-                    <ModalHeader>
-                        <div><h3>Insertar Tipo de Activo</h3></div>
-                    </ModalHeader>
-
-                    <ModalBody>
-                        <FormGroup>
-                            <label>Id:</label>
-                            <input className="form-control" readOnly type="number" value={this.state.data.length+1}/>
-                        </FormGroup>
-
-                        <FormGroup>
-                            <label> Código:</label>
-                            <select className="form-control" name="nombre" type="text" onChange={this.handleChange}/>
-                        </FormGroup>
-
-                        <FormGroup>
-                            <label> Nombre del Tipo de Activo Fijo: </label>
-                            <input className="form-control" name="apellido" type="text" onChange={this.handleChange}/>
-                        </FormGroup>
-                    </ModalBody>
-
-                    <ModalFooter>
-                        <Button color="primary"> Insertar</Button>
-                        <Button color="danger" onClick={()=>this.ocultarModalInsertar()}>Cancelar</Button>  
-                    </ModalFooter>
-                </Modal>
-                
-                 {/*CREANDO LA VENTANA MODAL PARA EDITAR TIPO DE ACTIVOS*/}
-                 <Modal isOpen={this.state.modalEditar}>
-                    <ModalHeader>
-                        <div><h3>Editar Tipo de Activo</h3></div>
-                    </ModalHeader>
-
-                    <ModalBody>
-                        <FormGroup>
-                            <label>Id:</label>
-                            <input className="form-control" readOnly type="number" value={this.state.form.id}/>
-                        </FormGroup>
-
-                        <FormGroup>
-                            <label> Código:</label>
-                            <input className="form-control" name="nombre" type="text" onChange={this.handleChange} value={this.state.form.codigo}/>
-                        </FormGroup>
-
-                        <FormGroup>
-                            <label> Nombre del Tipo Activo Fijo: </label>
-                            <input className="form-control" name="apellido" type="text" onChange={this.handleChange} value={this.state.form.NTAFijo}/>
-                        </FormGroup>
-                    </ModalBody>
-
-                    <ModalFooter>
-                        <Button color="primary" >Editar</Button>
-                        <Button color="danger" onClick={()=>this.ocultarModaEditar()}>Cancelar</Button>  
-                    </ModalFooter>
-                </Modal>
             </>
         )
     }

@@ -5,3 +5,27 @@
 .d-flex{
     margin-top: 20px;
 }
+.table{
+    margin-left: 20px;
+    margin-right: 20px;
+    width: 1300px;
+}
+
+.insertarempelado{
+    margin-left: 20px;
+    border-radius: 15px;
+}
+.registrartipoactivo,.insertaractivo{
+    margin-left: 20px;
+    border-radius: 15px;
+}
+.acciones{
+    cursor: pointer;
+}
+
+.editar{
+    color: blue;
+}
+.borrar{
+    color: red;
+}

@@ -1,10 +1,11 @@
 import React from "react"
 import imgg from '../img/logo-cnd-ab.png'
 import certi from '../img/certificados.PNG'
+import '../estilos/home.css';
 const Footer = ()=>{
     return(
         <>
-            <footer className="text-white py-4 bg-dark">
+            <footer className="text-white py-4 bg-dark footerdesc">
                 <div className="container">
                     <nav className="row">
                         <div className="col-12 col-md-3 d-flex align-items-center justify-content-center">
