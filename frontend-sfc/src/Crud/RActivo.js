@@ -6,11 +6,14 @@ import axios from 'axios'
 import { Form, FormControl } from "react-bootstrap";
 import '../estilos/Crud.css';
 import { useHistory } from 'react-router';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
+import ReactHTMLTableToExcel from 'react-html-table-to-excel';
 
 const data = [
     { id: 1, NTActivo: "Jose", MEquipo: "Castillo", DActivo: "dcdscsdvcds", FAdquisicion: "02/02/02", NRContable: "5450dsd", AUsuaria: "Para trasnporte", CAdquisicion: "8455555555", VNeto: "55465654", EActual: "Activo" },
 ];
+
+
 
 class RActivo extends React.Component {
     state = {
@@ -74,7 +77,7 @@ class RActivo extends React.Component {
                     `El activo ha sido actualizado  exitosamente!`,
                     'success'
                 )
-            } else {    
+            } else {
                 Swal.fire(
                     'Error!',
                     'Hubo un problema al crear el registro!',
@@ -101,7 +104,7 @@ class RActivo extends React.Component {
                     `El activo ha sido borrado  exitosamente!`,
                     'success'
                 )
-            } else {    
+            } else {
                 Swal.fire(
                     'Error!',
                     'Hubo un problema al crear el registro!',
@@ -156,9 +159,18 @@ class RActivo extends React.Component {
 
                     <br /><br /><br />
                     <button className="btn btn-success insertaractivo" onClick={() => { this.setState({ form: null, tipoModal: 'insertar' }); this.modalInsertar() }}>Agregar Activo</button>
-                    <br /><br />
+                    <div align="right">
+                        <ReactHTMLTableToExcel
+                            className="btn btn-success exportar"
+                            id="botonExportar"
+                            table="tablas"
+                            filename="Activosfijos"
+                            sheet="Hoja 1"
+                            buttonText="Exportar a Excel"
+                        />
+                    </div>
 
-                    <table className="table ">
+                    <table className="table" id="tablas">
                         <thead>
                             <tr><th>Id</th>
                                 <th>ModeloEquipo</th>
@@ -169,7 +181,7 @@ class RActivo extends React.Component {
                                 <th>CostoAdquisicion</th>
                                 <th>ValorNeto</th>
                                 <th>Estado</th>
-                                <th>codigoTipoActivo</th>
+                                <th>CodigoTipoActivo</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>

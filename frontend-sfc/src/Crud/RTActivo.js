@@ -6,6 +6,7 @@ import { Table, Button, Container, Modal, ModalBody, ModalHeader, FormGroup, Mod
 import { Link } from 'react-router-dom';
 import { Form, FormControl } from "react-bootstrap";
 import '../estilos/Crud.css';
+import ReactHTMLTableToExcel from 'react-html-table-to-excel';
 
 const data = [
     { id: 1, codigo: "Jose", NTAFijo: "Castillo" },
@@ -142,9 +143,18 @@ class RTActivo extends React.Component {
 
                     <br /><br /><br />
                     <button className="btn btn-success registrartipoactivo" onClick={() => { this.setState({ form: null, tipoModal: 'insertar' }); this.modalInsertar() }}>Agregar Tipo de Activo</button>
-                    <br /><br />
+                    <div align="right">
+                        <ReactHTMLTableToExcel
+                            className="btn btn-success exportar"
+                            id="botonExportar"
+                            table="tablastipoactivo"
+                            filename="TipoActivoFijo"
+                            sheet="Hoja 1"
+                            buttonText="Exportar a Excel"
+                        />
+                    </div>
 
-                    <table className="table ">
+                    <table className="table" id="tablastipoactivo">
                         <thead>
                             <tr>
                                 <th>id</th>

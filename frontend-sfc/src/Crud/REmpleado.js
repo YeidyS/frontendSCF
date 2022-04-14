@@ -6,6 +6,7 @@ import { Table, Button, Container, Modal, ModalBody, ModalHeader, FormGroup, Mod
 import { Link } from 'react-router-dom';
 import { Form, FormControl } from "react-bootstrap";
 import '../estilos/Crud.css';
+import ReactHTMLTableToExcel from 'react-html-table-to-excel';
 
 const data = [
     { id: 1, nombre: "Jose", apellido: "Castillo", cedula: "40215055878", celular: "8095548778" },
@@ -148,10 +149,18 @@ class REmpleado extends React.Component {
             <div className="registrarempl">
                 <br /><br /><br />
                 <button className="btn btn-success insertarempelado" onClick={() => { this.setState({ form: null, tipoModal: 'insertar' }); this.modalInsertar() }}>Agregar Empleado</button>
-                <br /><br />
+                <div align="right">
+                        <ReactHTMLTableToExcel
+                            className="btn btn-success exportar"
+                            id="botonExportar"
+                            table="tablasempl"
+                            filename="Empleados"
+                            sheet="Hoja 1"
+                            buttonText="Exportar a Excel"
+                        />
+                    </div>
 
-
-                <table className="table ">
+                <table className="table" id="tablasempl" >
                     <thead>
                         <tr>
                             <th>Id</th>
